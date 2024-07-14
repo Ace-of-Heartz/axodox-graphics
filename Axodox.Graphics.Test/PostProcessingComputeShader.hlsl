@@ -14,8 +14,7 @@ void main(uint3 index : SV_DispatchThreadID )
   _input.GetDimensions(size.x, size.y);
   
   float2 uv = (index.xy + 0.5) / size;
-  uv.x += 0.01 * sin(uv.y * 20 + Time);
+  //uv.x += 0.01 * sin(uv.y * 20 + Time);
   float4 color = _input.SampleLevel(_sampler, uv, 0);
-  
   _output[index.xy] = color;
 }

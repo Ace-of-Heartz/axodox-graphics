@@ -143,7 +143,7 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
       .DepthStencilDescriptorHeap = &depthStencilDescriptorHeap
     };
 
-    ImmutableMesh cubeMesh{ immutableAllocationContext, CreateCube() };
+    ImmutableMesh cubeMesh{ immutableAllocationContext, CreatePlane(2,{1,1}) };
     ImmutableTexture texture{ immutableAllocationContext, app_folder() / L"image.jpeg" };
 
     groupedResourceAllocator.Build();
@@ -218,7 +218,7 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
         commonDescriptorHeap.Build();
         commonDescriptorHeap.Set(allocator);
 
-        renderTargetView->Clear(allocator, { sin(0.01f * i++), sin(0.01f * i++ + XM_2PI * 0.33f), sin(0.01f * i++ + XM_2PI * 0.66f), 0.f });
+        renderTargetView->Clear(allocator, { 1.f,0.f,0.78f, 0.f });
         resources.DepthBuffer.DepthStencil()->Clear(allocator);
       }
 
