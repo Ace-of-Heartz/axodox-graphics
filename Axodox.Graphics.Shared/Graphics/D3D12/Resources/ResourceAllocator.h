@@ -3,10 +3,11 @@
 #include "Texture.h"
 #include "Buffer.h"
 #include "../Devices/GraphicsDevice.h"
+#include <span>
 
 namespace Axodox::Graphics::D3D12
 {
-  using ResourceSpan = std::span<const std::unique_ptr<Resource>>;
+  using ResourceSpan = std::span<const std::unique_ptr<Resource>>; // TODO: Check if this is correct
 
   class AXODOX_GRAPHICS_API ResourceAllocator
   {

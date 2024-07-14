@@ -51,6 +51,7 @@ namespace Axodox::Graphics::D3D12
       block.UploadBuffer->Unmap(0, &writtenRange);
 
       //Copy to default buffer
+      //Transition buffer to appropriate states for copying
       allocator.TransitionResources({
         { block.UploadBuffer, ResourceStates::Common, ResourceStates::CopySource },
         { block.DefaultBuffer, ResourceStates::AllShaderResource, ResourceStates::CopyDest }
@@ -58,6 +59,7 @@ namespace Axodox::Graphics::D3D12
 
       allocator->CopyResource(block.DefaultBuffer.get(), block.UploadBuffer.get());
 
+      //Transition buffer to appropriate states for usage
       allocator.TransitionResources({
         { block.UploadBuffer, ResourceStates::CopySource, ResourceStates::Common },
         { block.DefaultBuffer, ResourceStates::CopyDest, ResourceStates::AllShaderResource }
@@ -68,6 +70,11 @@ namespace Axodox::Graphics::D3D12
     }
   }
 
+  /// <summary>
+  /// Create a new block with the required space or more
+  /// </summary>
+  /// <param name="requiredSpace"></param>
+  /// <returns>A pointer to the new block with at least the size of the required space</returns>
   DynamicBufferManager::Block* DynamicBufferManager::GetOrCreateBlock(uint64_t requiredSpace)
   {
     //Allocate new block if needed
@@ -80,6 +87,11 @@ namespace Axodox::Graphics::D3D12
     return &_blocks.back();
   }
 
+  /// <summary>
+  /// Initialize a new block with the given size
+  /// </summary>
+  /// <param name="size"></param>
+  /// <returns></returns>
   DynamicBufferManager::Block DynamicBufferManager::CreateNewBlock(uint64_t size) const
   {
     Block block{

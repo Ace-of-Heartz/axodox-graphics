@@ -7,10 +7,16 @@ using namespace Axodox::Infrastructure;
 using namespace std;
 
 namespace {
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <param name="type"></param>
+  /// <returns>BlendType</returns>
   D3D12_RENDER_TARGET_BLEND_DESC GetRenderTargetBlendDescription(BlendType type)
   {
     D3D12_RENDER_TARGET_BLEND_DESC result;
     zero_memory(result);
+    
 
     switch (type)
     {
