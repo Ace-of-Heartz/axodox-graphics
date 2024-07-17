@@ -32,6 +32,8 @@ namespace Axodox::Graphics::D3D12
 
     virtual ~Resource() = default;
 
+    ID3D12Resource* getResource() const { return _resource.get(); }
+
   protected:
     Resource();
 

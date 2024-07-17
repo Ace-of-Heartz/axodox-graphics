@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Axodox.Graphics.Desktop", "
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Axodox.Graphics.Universal", "Axodox.Graphics.Universal\Axodox.Graphics.Universal.vcxproj", "{2E8DB87F-DAFA-433B-95A6-A1B5CEAB7B2A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AceOfHearts.Graphics.Shared", "AceOfHearts.Graphics.Shared\AceOfHearts.Graphics.Shared.vcxitems", "{BF79B40D-1120-4297-9F70-32FE71E150DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -42,5 +44,7 @@ Global
 		Axodox.Graphics.Shared\Axodox.Graphics.Shared.vcxitems*{01e40ab5-c2c7-4d85-a486-aba043e6488a}*SharedItemsImports = 9
 		Axodox.Graphics.Shared\Axodox.Graphics.Shared.vcxitems*{28109bc6-0715-4a75-a589-4cf6f00a8894}*SharedItemsImports = 4
 		Axodox.Graphics.Shared\Axodox.Graphics.Shared.vcxitems*{2e8db87f-dafa-433b-95a6-a1b5ceab7b2a}*SharedItemsImports = 4
+		AceOfHearts.Graphics.Shared\AceOfHearts.Graphics.Shared.vcxitems*{8e862168-f430-4a67-b9d4-e3d04f59e033}*SharedItemsImports = 4
+		AceOfHearts.Graphics.Shared\AceOfHearts.Graphics.Shared.vcxitems*{bf79b40d-1120-4297-9f70-32fe71e150df}*SharedItemsImports = 9
 	EndGlobalSection
 EndGlobal

@@ -20,6 +20,13 @@ namespace Axodox::Graphics::D3D12
     return _recorder->_list.get();
   }
 
+  ID3D12GraphicsCommandListT* CommandAllocator::getCommand()
+  {
+      if (!_recorder) BeginList();
+      return _recorder->_list.get();
+  }
+
+
   void CommandAllocator::BeginList(PipelineState* pipelineState)
   {
     if (_recorder) throw logic_error("Cannot start a command list before finishing the last one!");

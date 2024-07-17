@@ -1,4 +1,8 @@
 #include "pch.h"
+#include "imgui.h"
+#include "imgui_impl_dx12.h"
+#include "imgui_impl_uwp.h"
+
 
 using namespace std;
 using namespace winrt;
@@ -15,277 +19,300 @@ using namespace Axodox::Infrastructure;
 using namespace Axodox::Storage;
 using namespace DirectX;
 
+#include "ace_pch.h"
+#include "DXRUtility.h"
+#include "AccelerationStructure.h"
+using namespace AceOfHearts::Graphics::DXR;
+
 struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 {
-  IFrameworkView CreateView()
-  {
-    return *this;
-  }
+	IFrameworkView CreateView()
+	{
+		return *this;
+	}
 
-  void Initialize(CoreApplicationView const&)
-  {
-  }
+	void Initialize(CoreApplicationView const&)
+	{
+	}
 
-  void Load(hstring const&)
-  {
-  }
+	void Load(hstring const&)
+	{
+	}
 
-  void Uninitialize()
-  {
-  }
+	void Uninitialize()
+	{
+	}
 
-  struct FrameResources
-  {
-    CommandAllocator Allocator;
-    CommandFence Fence;
-    CommandFenceMarker Marker;
-    DynamicBufferManager DynamicBuffer;
+	struct Constants
+	{
+		XMFLOAT4X4 WorldViewProjection;
+	};
 
-    MutableTexture DepthBuffer;
-    MutableTexture PostProcessingBuffer;
-    descriptor_ptr<ShaderResourceView> ScreenResourceView;
+	void Run()
+	{
+		bool rasterMode = false;
 
-    FrameResources(const ResourceAllocationContext& context) :
-      Allocator(*context.Device),
-      Fence(*context.Device),
-      Marker(),
-      DynamicBuffer(*context.Device),
-      DepthBuffer(context),
-      PostProcessingBuffer(context)
-    { }
-  };
+		CoreWindow window = CoreWindow::GetForCurrentThread();
+		window.Activate();
 
-  struct SimpleRootDescription : public RootSignatureMask
-  {
-    RootDescriptor<RootDescriptorType::ConstantBuffer> ConstantBuffer;
-    RootDescriptorTable<1> Texture;
-    StaticSampler Sampler;
+		CoreDispatcher dispatcher = window.Dispatcher();
 
-    SimpleRootDescription(const RootSignatureContext& context) :
-      RootSignatureMask(context),
-      ConstantBuffer(this, { 0 }, ShaderVisibility::Vertex),
-      Texture(this, { DescriptorRangeType::ShaderResource }, ShaderVisibility::Pixel),
-      Sampler(this, { 0 }, Filter::Linear, TextureAddressMode::Clamp, ShaderVisibility::Pixel)
-    {
-      Flags = RootSignatureFlags::AllowInputAssemblerInputLayout;
-    }
-  };
+		GraphicsDevice device{};
+		
+		try {
+			CheckRayTracingSupport(device.get());
+		} catch (std::exception e) {
+			rasterMode = true;
+		}
 
-  struct PostProcessingRootDescription : public RootSignatureMask
-  {
-    RootDescriptor<RootDescriptorType::ConstantBuffer> ConstantBuffer;
-    RootDescriptorTable<1> InputTexture;
-    RootDescriptorTable<1> OutputTexture;
-    StaticSampler Sampler;
+		XMFLOAT4 clearColor;
 
-    PostProcessingRootDescription(const RootSignatureContext& context) :
-      RootSignatureMask(context),
-      ConstantBuffer(this, { 0 }),
-      InputTexture(this, { DescriptorRangeType::ShaderResource }),
-      OutputTexture(this, { DescriptorRangeType::UnorderedAccess }),
-      Sampler(this, { 0 }, Filter::Linear, TextureAddressMode::Clamp)
-    {
-      Flags = RootSignatureFlags::AllowInputAssemblerInputLayout;
-    }
-  };
+		if (rasterMode) {
+			clearColor = { 1.f, 0.f, 0.78f, 0.f };
+		} else {
+			clearColor = { 0.88f, 0.78f, 0.f, 0.f };
+		}
 
-  struct Constants
-  {
-    XMFLOAT4X4 WorldViewProjection;
-  };
+		//CreateAccelerationStructures();
 
-  void Run()
-  {
-    CoreWindow window = CoreWindow::GetForCurrentThread();
-    window.Activate();
 
-    CoreDispatcher dispatcher = window.Dispatcher();
+		CommandQueue directQueue{ device };
+		CoreSwapChain swapChain{ directQueue, window, SwapChainFlags::IsShaderResource };
 
-    GraphicsDevice device{};
-    CommandQueue directQueue{ device };
-    CoreSwapChain swapChain{ directQueue, window, SwapChainFlags::IsShaderResource };
+		PipelineStateProvider pipelineStateProvider{ device };
 
-    PipelineStateProvider pipelineStateProvider{ device };
+		RootSignature<SimpleRootDescription> simpleRootSignature{ device };
+		//VertexShader simpleVertexShader{ app_folder() / L"SimpleVertexShader.cso" };
+		//PixelShader simplePixelShader{ app_folder() / L"SimplePixelShader.cso" };
 
-    RootSignature<SimpleRootDescription> simpleRootSignature{ device };
-    VertexShader simpleVertexShader{ app_folder() / L"SimpleVertexShader.cso" };
-    PixelShader simplePixelShader{ app_folder() / L"SimplePixelShader.cso" };
+		/*GraphicsPipelineStateDefinition simplePipelineStateDefinition{
+		  .RootSignature = &simpleRootSignature,
+		  .VertexShader = &simpleVertexShader,
+		  .PixelShader = &simplePixelShader,
+		  .RasterizerState = RasterizerFlags::CullClockwise,
+		  .DepthStencilState = DepthStencilMode::WriteDepth,
+		  .InputLayout = VertexPositionNormalTexture::Layout,
+		  .RenderTargetFormats = { Format::B8G8R8A8_UNorm },
+		  .DepthStencilFormat = Format::D32_Float
+		};
+		auto simplePipelineState = pipelineStateProvider.CreatePipelineStateAsync(simplePipelineStateDefinition).get();*/
 
-    GraphicsPipelineStateDefinition simplePipelineStateDefinition{
-      .RootSignature = &simpleRootSignature,
-      .VertexShader = &simpleVertexShader,
-      .PixelShader = &simplePixelShader,
-      .RasterizerState = RasterizerFlags::CullClockwise,
-      .DepthStencilState = DepthStencilMode::WriteDepth,
-      .InputLayout = VertexPositionNormalTexture::Layout,
-      .RenderTargetFormats = { Format::B8G8R8A8_UNorm },
-      .DepthStencilFormat = Format::D32_Float
-    };
-    auto simplePipelineState = pipelineStateProvider.CreatePipelineStateAsync(simplePipelineStateDefinition).get();
-        
-    RootSignature<PostProcessingRootDescription> postProcessingRootSignature{ device };
-    ComputeShader postProcessingComputeShader{ app_folder() / L"PostProcessingComputeShader.cso" };
-    ComputePipelineStateDefinition postProcessingStateDefinition{
-      .RootSignature = &postProcessingRootSignature,
-      .ComputeShader = &postProcessingComputeShader
-    };
-    auto postProcessingPipelineState = pipelineStateProvider.CreatePipelineStateAsync(postProcessingStateDefinition).get();
-        
-    GroupedResourceAllocator groupedResourceAllocator{ device };
-    ResourceUploader resourceUploader{ device };
-    CommonDescriptorHeap commonDescriptorHeap{ device, 2 };
-    DepthStencilDescriptorHeap depthStencilDescriptorHeap{ device };
-    ResourceAllocationContext immutableAllocationContext{
-      .Device = &device,
-      .ResourceAllocator = &groupedResourceAllocator,
-      .ResourceUploader = &resourceUploader,
-      .CommonDescriptorHeap = &commonDescriptorHeap,
-      .DepthStencilDescriptorHeap = &depthStencilDescriptorHeap
-    };
+		/*RootSignature<PostProcessingRootDescription> postProcessingRootSignature{ device };
+		ComputeShader postProcessingComputeShader{ app_folder() / L"PostProcessingComputeShader.cso" };
+		ComputePipelineStateDefinition postProcessingStateDefinition{
+		  .RootSignature = &postProcessingRootSignature,
+		  .ComputeShader = &postProcessingComputeShader
+		};*/
+		/*auto postProcessingPipelineState = pipelineStateProvider.CreatePipelineStateAsync(postProcessingStateDefinition).get();*/
 
-    ImmutableMesh cubeMesh{ immutableAllocationContext, CreatePlane(2,{1,1}) };
-    ImmutableTexture texture{ immutableAllocationContext, app_folder() / L"image.jpeg" };
+		GroupedResourceAllocator groupedResourceAllocator{ device };
+		ResourceUploader resourceUploader{ device };
+		CommonDescriptorHeap commonDescriptorHeap{ device, 2 };
+		DepthStencilDescriptorHeap depthStencilDescriptorHeap{ device };
+		ResourceAllocationContext immutableAllocationContext{
+		  .Device = &device,
+		  .ResourceAllocator = &groupedResourceAllocator,
+		  .ResourceUploader = &resourceUploader,
+		  .CommonDescriptorHeap = &commonDescriptorHeap,
+		  .DepthStencilDescriptorHeap = &depthStencilDescriptorHeap
+		};
 
-    groupedResourceAllocator.Build();
+		ImmutableMesh cubeMesh{ immutableAllocationContext, CreateCube() };
+		ImmutableTexture texture{ immutableAllocationContext, app_folder() / L"image.jpeg" };
 
-    auto mutableAllocationContext = immutableAllocationContext;
-    CommittedResourceAllocator committedResourceAllocator{ device };
-    mutableAllocationContext.ResourceAllocator = &committedResourceAllocator;
+		groupedResourceAllocator.Build();
 
-    array<FrameResources, 2> frames{ mutableAllocationContext, mutableAllocationContext };
+		auto mutableAllocationContext = immutableAllocationContext;
+		CommittedResourceAllocator committedResourceAllocator{ device };
+		mutableAllocationContext.ResourceAllocator = &committedResourceAllocator;
 
-    swapChain.Resizing(no_revoke, [&](SwapChain*) {
-      for (auto& frame : frames) frame.ScreenResourceView.reset();
-      commonDescriptorHeap.Clean();
-      });
+		array<FrameResources, 2> frames{ mutableAllocationContext, mutableAllocationContext };
 
-    auto i = 0u;
-    while (true)
-    {
-      //Process user input
-      dispatcher.ProcessEvents(CoreProcessEventsOption::ProcessAllIfPresent);
+		swapChain.Resizing(no_revoke, [&](SwapChain*) {
+			for (auto& frame : frames) frame.ScreenResourceView.reset();
+			commonDescriptorHeap.Clean();
+			});
 
-      //Get frame resources
-      auto& resources = frames[i++ & 0x1u];
-      auto renderTargetView = swapChain.RenderTargetView();
 
-      //Wait until buffers can be reused
-      if (resources.Marker) resources.Fence.Await(resources.Marker);
+		//InitImGui();
 
-      //Update constants
-      Constants constants{};
-      auto resolution = swapChain.Resolution();
-      {
-        auto projection = XMMatrixPerspectiveFovRH(90.f, float(resolution.x) / float(resolution.y), 0.01f, 10.f);
-        auto view = XMMatrixLookAtRH(XMVectorSet(1.5f * cos(i * 0.002f), 1.5f * sin(i * 0.002f), 1.5f * cos(i * 0.0005f), 1.f), XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f));
-        auto world = XMMatrixIdentity();
-        auto worldViewProjection = XMMatrixTranspose(world * view * projection);
+		auto i = 0u;
+		while (true)
+		{
+			//Process user input
+			dispatcher.ProcessEvents(CoreProcessEventsOption::ProcessAllIfPresent);
 
-        XMStoreFloat4x4(&constants.WorldViewProjection, worldViewProjection);
-      }
+			//Get frame resources
+			auto& resources = frames[i++ & 0x1u];
+			auto renderTargetView = swapChain.RenderTargetView();
 
-      //Ensure depth buffer
-      if (!resources.DepthBuffer || !TextureDefinition::AreSizeCompatible(*resources.DepthBuffer.Definition(), renderTargetView->Definition()))
-      {
-        auto depthDefinition = renderTargetView->Definition().MakeSizeCompatible(Format::D32_Float, TextureFlags::DepthStencil);
-        resources.DepthBuffer.Allocate(depthDefinition);
-      }
+			//Wait until buffers can be reused
+			if (resources.Marker) resources.Fence.Await(resources.Marker);
 
-      //Ensure screen shader resource view
-      if (!resources.ScreenResourceView || resources.ScreenResourceView->Resource() != renderTargetView->Resource())
-      {
-        Texture screenTexture{ renderTargetView->Resource() };
-        resources.ScreenResourceView = commonDescriptorHeap.CreateShaderResourceView(&screenTexture);
-      }
+			//Update constants
+			Constants constants{};
+			auto resolution = swapChain.Resolution();
+			{
+				auto projection = XMMatrixPerspectiveFovRH(90.f, float(resolution.x) / float(resolution.y), 0.01f, 10.f);
+				auto view = XMMatrixLookAtRH(XMVectorSet(1.5f * cos(i * 0.002f), 1.5f * sin(i * 0.002f), 1.5f * cos(i * 0.0005f), 1.f), XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f));
+				auto world = XMMatrixIdentity();
+				auto worldViewProjection = XMMatrixTranspose(world * view * projection);
 
-      //Ensure post processing buffer
-      if (!resources.PostProcessingBuffer || !TextureDefinition::AreSizeCompatible(*resources.PostProcessingBuffer.Definition(), renderTargetView->Definition()))
-      {
-        auto postProcessingDefinition = renderTargetView->Definition().MakeSizeCompatible(Format::B8G8R8A8_UNorm, TextureFlags::UnorderedAccess);
-        resources.PostProcessingBuffer.Allocate(postProcessingDefinition);
-      }
+				XMStoreFloat4x4(&constants.WorldViewProjection, worldViewProjection);
+			}
 
-      //Begin frame command list
-      auto& allocator = resources.Allocator;
-      {
-        allocator.Reset();
-        allocator.BeginList();
-        allocator.TransitionResource(*renderTargetView, ResourceStates::Present, ResourceStates::RenderTarget);
+			//Ensure depth buffer
+			if (!resources.DepthBuffer || !TextureDefinition::AreSizeCompatible(*resources.DepthBuffer.Definition(), renderTargetView->Definition()))
+			{
+				auto depthDefinition = renderTargetView->Definition().MakeSizeCompatible(Format::D32_Float, TextureFlags::DepthStencil);
+				resources.DepthBuffer.Allocate(depthDefinition);
+			}
 
-        committedResourceAllocator.Build();
-        depthStencilDescriptorHeap.Build();
+			//Ensure screen shader resource view
+			if (!resources.ScreenResourceView || resources.ScreenResourceView->Resource() != renderTargetView->Resource())
+			{
+				Texture screenTexture{ renderTargetView->Resource() };
+				resources.ScreenResourceView = commonDescriptorHeap.CreateShaderResourceView(&screenTexture);
+			}
 
-        commonDescriptorHeap.Build();
-        commonDescriptorHeap.Set(allocator);
+			//Ensure post processing buffer
+			if (!resources.PostProcessingBuffer || !TextureDefinition::AreSizeCompatible(*resources.PostProcessingBuffer.Definition(), renderTargetView->Definition()))
+			{
+				auto postProcessingDefinition = renderTargetView->Definition().MakeSizeCompatible(Format::B8G8R8A8_UNorm, TextureFlags::UnorderedAccess);
+				resources.PostProcessingBuffer.Allocate(postProcessingDefinition);
+			}
 
-        renderTargetView->Clear(allocator, { 1.f,0.f,0.78f, 0.f });
-        resources.DepthBuffer.DepthStencil()->Clear(allocator);
-      }
+			//Begin frame command list
+			auto& allocator = resources.Allocator;
+			{
+				allocator.Reset();
+				allocator.BeginList();
+				allocator.TransitionResource(*renderTargetView, ResourceStates::Present, ResourceStates::RenderTarget);
 
-      //Draw objects
-      {
-        auto mask = simpleRootSignature.Set(allocator, RootSignatureUsage::Graphics);
-        mask.ConstantBuffer = resources.DynamicBuffer.AddBuffer(constants);
-        mask.Texture = texture;
+				committedResourceAllocator.Build();
+				depthStencilDescriptorHeap.Build();
 
-        allocator.SetRenderTargets({ renderTargetView }, resources.DepthBuffer.DepthStencil());
-        simplePipelineState.Apply(allocator);
-        cubeMesh.Draw(allocator);
-      }
+				commonDescriptorHeap.Build();
+				commonDescriptorHeap.Set(allocator);
 
-      //Post processing
-      {
-        allocator.TransitionResource(*renderTargetView, ResourceStates::RenderTarget, ResourceStates::NonPixelShaderResource);
+				renderTargetView->Clear(allocator, clearColor);
+				resources.DepthBuffer.DepthStencil()->Clear(allocator);
+			}
 
-        auto mask = postProcessingRootSignature.Set(allocator, RootSignatureUsage::Compute);
-        mask.ConstantBuffer = resources.DynamicBuffer.AddBuffer(i * 0.02f);
-        mask.InputTexture = *resources.ScreenResourceView;
-        mask.OutputTexture = *resources.PostProcessingBuffer.UnorderedAccess();
-        postProcessingPipelineState.Apply(allocator);
 
-        auto definition = resources.PostProcessingBuffer.Definition();
-        allocator.Dispatch(definition->Width / 16 + 1, definition->Height / 16 + 1);
 
-        allocator.TransitionResources({
-          { resources.PostProcessingBuffer, ResourceStates::UnorderedAccess, ResourceStates::CopySource },
-          { *renderTargetView, ResourceStates::NonPixelShaderResource, ResourceStates::CopyDest }
-        });
 
-        allocator.CopyResource(resources.PostProcessingBuffer, *renderTargetView);
+			//Draw objects
+			{
+				/*auto mask = simpleRootSignature.Set(allocator, RootSignatureUsage::Graphics);
+				mask.ConstantBuffer = resources.DynamicBuffer.AddBuffer(constants);
+				mask.Texture = texture;
 
-        allocator.TransitionResources({
-          { resources.PostProcessingBuffer, ResourceStates::CopySource, ResourceStates::UnorderedAccess },
-          { *renderTargetView, ResourceStates::CopyDest, ResourceStates::RenderTarget }
-        });
-      }
+				allocator.SetRenderTargets({ renderTargetView }, resources.DepthBuffer.DepthStencil());
+				simplePipelineState.Apply(allocator);
+				cubeMesh.Draw(allocator);*/
+			}
 
-      //End frame command list
-      {
-        allocator.TransitionResource(*renderTargetView, ResourceStates::RenderTarget, ResourceStates::Present);
-        auto drawCommandList = allocator.EndList();
+			//Post processing
+			{
+				/*allocator.TransitionResource(*renderTargetView, ResourceStates::RenderTarget, ResourceStates::NonPixelShaderResource);
 
-        allocator.BeginList();
-        resources.DynamicBuffer.UploadResources(allocator);
-        resourceUploader.UploadResourcesAsync(allocator);
-        auto initCommandList = allocator.EndList();
+				auto mask = postProcessingRootSignature.Set(allocator, RootSignatureUsage::Compute);
+				mask.ConstantBuffer = resources.DynamicBuffer.AddBuffer(i * 0.02f);
+				mask.InputTexture = *resources.ScreenResourceView;
+				mask.OutputTexture = *resources.PostProcessingBuffer.UnorderedAccess();
+				postProcessingPipelineState.Apply(allocator);
 
-        directQueue.Execute(initCommandList);
-        directQueue.Execute(drawCommandList);
-        resources.Marker = resources.Fence.EnqueueSignal(directQueue);
-      }
+				auto definition = resources.PostProcessingBuffer.Definition();
+				allocator.Dispatch(definition->Width / 16 + 1, definition->Height / 16 + 1);
 
-      //Present frame
-      swapChain.Present();
-    }
-  }
+				allocator.TransitionResources({
+				  { resources.PostProcessingBuffer, ResourceStates::UnorderedAccess, ResourceStates::CopySource },
+				  { *renderTargetView, ResourceStates::NonPixelShaderResource, ResourceStates::CopyDest }
+					});
 
-  void SetWindow(CoreWindow const& /*window*/)
-  {
+				allocator.CopyResource(resources.PostProcessingBuffer, *renderTargetView);
 
-  }
+				allocator.TransitionResources({
+				  { resources.PostProcessingBuffer, ResourceStates::CopySource, ResourceStates::UnorderedAccess },
+				  { *renderTargetView, ResourceStates::CopyDest, ResourceStates::RenderTarget }
+					});*/
+			}
+
+
+			//End frame command list
+			{
+				allocator.TransitionResource(*renderTargetView, ResourceStates::RenderTarget, ResourceStates::Present);
+				auto drawCommandList = allocator.EndList();
+
+				allocator.BeginList();
+				resources.DynamicBuffer.UploadResources(allocator);
+				resourceUploader.UploadResourcesAsync(allocator);
+				auto initCommandList = allocator.EndList();
+
+				directQueue.Execute(initCommandList);
+				directQueue.Execute(drawCommandList);
+				resources.Marker = resources.Fence.EnqueueSignal(directQueue);
+			}
+
+			//Present frame
+			swapChain.Present();
+		}
+
+		//CleanImGui();
+	}
+
+	void InitImGui() {
+		ImGui::CreateContext();
+
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+		ImGui_ImplUwp_InitForCurrentView();
+
+		// TODO: Figure out what heck this needs to work
+		// How do I even start with that bruh
+		/*D3D12_GPU_DESCRIPTOR_HANDLE gpuSrvHandle;
+		gpuSrvHandle = immutableAllocationContext.CommonDescriptorHeap->get()->GetGPUDescriptorHandleForHeapStart();
+
+		D3D12_CPU_DESCRIPTOR_HANDLE cpuSrvHandle;
+		cpuSrvHandle = immutableAllocationContext.CommonDescriptorHeap->get()->GetCPUDescriptorHandleForHeapStart();
+
+		ImGui_ImplDX12_Init(device.get(), 2,
+			DXGI_FORMAT_R8G8B8A8_UNORM,
+			nullptr,
+			cpuSrvHandle,
+			gpuSrvHandle);*/
+
+	}
+
+	void RunImGui(CommandAllocator allocator) {
+
+		//ImGui begin
+		ImGui_ImplUwp_NewFrame();
+		ImGui::NewFrame();
+		ImGui::ShowDemoWindow(); // Show demo window! :)
+		ImGui::Render();
+		ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), allocator.getCommand());
+	}
+
+	void CleanImGui() {
+		//ImGui_ImplDX12_Shutdown();
+		ImGui_ImplUwp_Shutdown();
+		ImGui::DestroyContext();
+	}
+
+
+	void SetWindow(CoreWindow const& /*window*/)
+	{
+
+	}
 };
 
 int __stdcall wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
 {
-  CoreApplication::Run(make<App>());
+	CoreApplication::Run(make<App>());
 }

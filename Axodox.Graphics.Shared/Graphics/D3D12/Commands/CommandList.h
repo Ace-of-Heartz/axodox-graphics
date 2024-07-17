@@ -18,6 +18,10 @@ namespace Axodox::Graphics::D3D12
     CommandList(CommandList&&) = default;
     CommandList& operator =(CommandList&&) = default;
 
+    inline ID3D12GraphicsCommandList7* get() const {
+        return _list.get();
+    }
+
   private:
     winrt::com_ptr<ID3D12GraphicsCommandList7> _list;
     std::vector<CommandFenceMarker> _signalers, _awaiters;

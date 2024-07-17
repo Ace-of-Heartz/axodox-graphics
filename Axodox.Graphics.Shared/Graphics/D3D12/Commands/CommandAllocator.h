@@ -27,6 +27,7 @@ namespace Axodox::Graphics::D3D12
     CommandAllocator& operator=(const CommandAllocator&) = delete;
 
     ID3D12GraphicsCommandListT* operator->();
+    ID3D12GraphicsCommandListT* getCommand();
 
     void BeginList(PipelineState* pipelineState = nullptr);
     [[nodiscard]] Collections::object_pool_handle<CommandList> EndList();

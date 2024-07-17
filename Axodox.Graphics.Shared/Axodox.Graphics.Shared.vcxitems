@@ -14,6 +14,9 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\imgui-docking\imgui-docking\imstb_rectpack.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\imgui-docking\imgui-docking\imstb_textedit.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\imgui-docking\imgui-docking\imstb_truetype.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Graphics\D3D12\Commands\CommandFenceMarker.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Graphics\D3D12\Descriptors\CommonDescriptorHeap.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Graphics\D3D12\Descriptors\DepthStencilView.h" />

@@ -29,6 +29,8 @@ namespace Axodox::Graphics::D3D12
     void Build();
     void Clean();
 
+    ID3D12DescriptorHeap* get() const { return _heap.get(); }
+
   protected:
     GraphicsDevice _device;
 

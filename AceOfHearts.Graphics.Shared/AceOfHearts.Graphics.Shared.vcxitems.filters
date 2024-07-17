@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ImGUI">
+      <UniqueIdentifier>{90b895a6-1914-4d90-8641-110e0dfdbf92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGUI\Header Files">
+      <UniqueIdentifier>{210fb926-b333-4081-ae93-b194536ece10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGUI\Source Files">
+      <UniqueIdentifier>{eb00b68c-bea7-4dfa-93b9-6b4fe7413739}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DXR">
+      <UniqueIdentifier>{1af39e34-09ff-4a83-8c3a-a44b74cca91c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DXR\Source Files">
+      <UniqueIdentifier>{ca74af37-f202-401b-b759-6b314d927465}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DXR\Header Files">
+      <UniqueIdentifier>{eb3498bf-de3a-4941-8598-ecb0be3cef96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AceDXR">
+      <UniqueIdentifier>{8dcc6f78-885a-46f9-8aae-6466133ce108}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\Axodox.Graphics.Test\imgui_impl_uwp.h">
+      <Filter>ImGUI\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)DXRHelper.h">
+      <Filter>DXR\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nv_helpers_dx12\BottomLevelASGenerator.h">
+      <Filter>DXR\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nv_helpers_dx12\RaytracingPipelineGenerator.h">
+      <Filter>DXR\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nv_helpers_dx12\RootSignatureGenerator.h">
+      <Filter>DXR\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nv_helpers_dx12\ShaderBindingTableGenerator.h">
+      <Filter>DXR\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nv_helpers_dx12\TopLevelASGenerator.h">
+      <Filter>DXR\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ace_pch.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ace_includes.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DXRUtility.h">
+      <Filter>AceDXR</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)AccelerationStructure.h">
+      <Filter>AceDXR</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)DXRWrapper.h">
+      <Filter>AceDXR</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\Axodox.Graphics.Test\imgui_impl_uwp.cpp">
+      <Filter>ImGUI\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)nv_helpers_dx12\BottomLevelASGenerator.cpp">
+      <Filter>DXR\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)nv_helpers_dx12\RaytracingPipelineGenerator.cpp">
+      <Filter>DXR\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)nv_helpers_dx12\RootSignatureGenerator.cpp">
+      <Filter>DXR\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)nv_helpers_dx12\ShaderBindingTableGenerator.cpp">
+      <Filter>DXR\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)nv_helpers_dx12\TopLevelASGenerator.cpp">
+      <Filter>DXR\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)DXRUtility.cpp">
+      <Filter>AceDXR</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

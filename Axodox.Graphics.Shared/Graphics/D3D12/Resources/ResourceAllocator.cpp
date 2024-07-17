@@ -17,6 +17,11 @@ namespace Axodox::Graphics::D3D12
     return result;
   }
 
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <param name="definition"></param>
+  /// <returns>nullptr, if the specified length is 0</returns>
   BufferRef ResourceAllocator::CreateBuffer(const BufferDefinition& definition)
   {
     if (!definition.Length) return nullptr;
