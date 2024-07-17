@@ -19,17 +19,73 @@ using namespace Axodox::Infrastructure;
 using namespace Axodox::Storage;
 using namespace DirectX;
 
-#include "ace_pch.h"
-#include "DXRUtility.h"
-#include "AccelerationStructure.h"
-using namespace AceOfHearts::Graphics::DXR;
+
 
 struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 {
+
+	struct FrameResources
+	{
+		CommandAllocator Allocator;
+		CommandFence Fence;
+		CommandFenceMarker Marker;
+		DynamicBufferManager DynamicBuffer;
+
+		MutableTexture DepthBuffer;
+		MutableTexture PostProcessingBuffer;
+		descriptor_ptr<ShaderResourceView> ScreenResourceView;
+
+		FrameResources(const ResourceAllocationContext& context) :
+			Allocator(*context.Device),
+			Fence(*context.Device),
+			Marker(),
+			DynamicBuffer(*context.Device),
+			DepthBuffer(context),
+			PostProcessingBuffer(context)
+		{ }
+	};
+
+	struct SimpleRootDescription : public RootSignatureMask
+	{
+		RootDescriptor<RootDescriptorType::ConstantBuffer> ConstantBuffer;
+		RootDescriptorTable<1> Texture;
+		StaticSampler Sampler;
+
+		SimpleRootDescription(const RootSignatureContext& context) :
+			RootSignatureMask(context),
+			ConstantBuffer(this, { 0 }, ShaderVisibility::Vertex),
+			Texture(this, { DescriptorRangeType::ShaderResource }, ShaderVisibility::Pixel),
+			Sampler(this, { 0 }, Filter::Linear, TextureAddressMode::Clamp, ShaderVisibility::Pixel)
+		{
+			Flags = RootSignatureFlags::AllowInputAssemblerInputLayout;
+		}
+	};
+
+	struct PostProcessingRootDescription : public RootSignatureMask
+	{
+		RootDescriptor<RootDescriptorType::ConstantBuffer> ConstantBuffer;
+		RootDescriptorTable<1> InputTexture;
+		RootDescriptorTable<1> OutputTexture;
+		StaticSampler Sampler;
+
+		PostProcessingRootDescription(const RootSignatureContext& context) :
+			RootSignatureMask(context),
+			ConstantBuffer(this, { 0 }),
+			InputTexture(this, { DescriptorRangeType::ShaderResource }),
+			OutputTexture(this, { DescriptorRangeType::UnorderedAccess }),
+			Sampler(this, { 0 }, Filter::Linear, TextureAddressMode::Clamp)
+		{
+			Flags = RootSignatureFlags::AllowInputAssemblerInputLayout;
+		}
+	};
+
+
 	IFrameworkView CreateView()
 	{
 		return *this;
 	}
+
+
 
 	void Initialize(CoreApplicationView const&)
 	{
@@ -60,7 +116,7 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 		GraphicsDevice device{};
 		
 		try {
-			CheckRayTracingSupport(device.get());
+			//CheckRayTracingSupport(device.get());
 		} catch (std::exception e) {
 			rasterMode = true;
 		}

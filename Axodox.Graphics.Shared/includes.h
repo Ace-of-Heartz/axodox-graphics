@@ -20,6 +20,8 @@
 #include <Include/Axodox.Storage.h>
 #include <Include/Axodox.Threading.h>
 
+#define AXODOX_GRAPHICS_EXPORT
+
 #ifdef AXODOX_GRAPHICS_EXPORT
 #define AXODOX_GRAPHICS_API __declspec(dllexport)
 #else

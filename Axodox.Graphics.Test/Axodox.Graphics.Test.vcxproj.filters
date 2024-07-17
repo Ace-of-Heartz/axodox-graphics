@@ -32,9 +32,4 @@
   <ItemGroup>
     <Text Include="readme.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Filter Include="ImGUI">
-      <UniqueIdentifier>{d178cb91-d6bb-4430-a0f9-10c5190208e0}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
 </Project>
