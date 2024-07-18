@@ -2,7 +2,7 @@
 #include "imgui.h"
 #include "imgui_impl_dx12.h"
 #include "imgui_impl_uwp.h"
-
+//#include "dxr_include.h"
 
 using namespace std;
 using namespace winrt;
@@ -19,6 +19,7 @@ using namespace Axodox::Infrastructure;
 using namespace Axodox::Storage;
 using namespace DirectX;
 
+//using namespace AceOfHearts::Graphics::DXR;
 
 
 struct App : implements<App, IFrameworkViewSource, IFrameworkView>
@@ -108,6 +109,8 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 	{
 		bool rasterMode = false;
 
+		
+
 		CoreWindow window = CoreWindow::GetForCurrentThread();
 		window.Activate();
 
@@ -116,7 +119,7 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 		GraphicsDevice device{};
 		
 		try {
-			//CheckRayTracingSupport(device.get());
+			//CheckRayTracingSupport(&device);
 		} catch (std::exception e) {
 			rasterMode = true;
 		}
@@ -331,7 +334,8 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 
 		// TODO: Figure out what heck this needs to work
 		// How do I even start with that bruh
-		/*D3D12_GPU_DESCRIPTOR_HANDLE gpuSrvHandle;
+		/*
+		D3D12_GPU_DESCRIPTOR_HANDLE gpuSrvHandle;
 		gpuSrvHandle = immutableAllocationContext.CommonDescriptorHeap->get()->GetGPUDescriptorHandleForHeapStart();
 
 		D3D12_CPU_DESCRIPTOR_HANDLE cpuSrvHandle;
@@ -341,7 +345,9 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 			DXGI_FORMAT_R8G8B8A8_UNORM,
 			nullptr,
 			cpuSrvHandle,
-			gpuSrvHandle);*/
+			gpuSrvHandle);
+
+		*/
 
 	}
 

@@ -219,15 +219,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Graphics\D3D12\Meshes\ImmutableMesh.h">
       <Filter>Axodox\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\imgui-docking\imgui-docking\imstb_truetype.h">
-      <Filter>Axodox\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\imgui-docking\imgui-docking\imstb_rectpack.h">
-      <Filter>Axodox\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\imgui-docking\imgui-docking\imstb_textedit.h">
-      <Filter>Axodox\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Graphics\D3D12\Meshes\MeshDescriptions.h">
       <Filter>Axodox\Header Files</Filter>
     </ClInclude>
@@ -329,6 +320,9 @@
       <UniqueIdentifier>{5367b316-2a86-44cf-af0d-b9fec376711e}</UniqueIdentifier>
       <Extensions>
       </Extensions>
+    </Filter>
+    <Filter Include="DXR">
+      <UniqueIdentifier>{fd5f2a07-b176-4b05-8d15-08d5db6b687e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

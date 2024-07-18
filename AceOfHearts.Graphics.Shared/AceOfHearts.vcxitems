@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{46a60ff6-e754-49c2-921d-a722cb12c04f}</ItemsProjectGuid>
+    <ItemsProjectName>AceOfHearts.Graphics.DXR</ItemsProjectName>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Graphics\DXR\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)AccelerationStructures.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)dxr_include.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Extensions\ImGUI\imgui_impl_uwp.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Graphics\DXR\BottomLevelASGenerator.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Graphics\DXR\DXRUtility.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Graphics\DXR\DXRWrapper.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Graphics\DXR\RaytracingPipelineGenerator.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Graphics\DXR\RootSignatureGenerator.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Graphics\DXR\ShaderBindingTableGenerator.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Graphics\DXR\TopLevelASGenerator.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)AccelerationStructures.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Extensions\ImGUI\imgui_impl_uwp.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Graphics\DXR\BottomLevelASGenerator.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Graphics\DXR\DXRUtility.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Graphics\DXR\RaytracingPipelineGenerator.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Graphics\DXR\RootSignatureGenerator.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Graphics\DXR\ShaderBindingTableGenerator.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Graphics\DXR\TopLevelASGenerator.cpp" />
+  </ItemGroup>
+</Project>
