@@ -3,21 +3,25 @@
 #include "imgui_impl_dx12.h"
 #include "imgui_impl_uwp.h"
 //#include "dxr_include.h"
+#include <wrl/client.h>
 
+using namespace Microsoft::WRL;
 using namespace std;
 using namespace winrt;
 
-using namespace Windows;
-using namespace Windows::ApplicationModel::Core;
-using namespace Windows::Foundation::Numerics;
-using namespace Windows::UI;
-using namespace Windows::UI::Core;
-using namespace Windows::UI::Composition;
+using namespace winrt::Windows;
+using namespace winrt::Windows::ApplicationModel::Core;
+using namespace winrt::Windows::Foundation::Numerics;
+using namespace winrt::Windows::UI;
+using namespace winrt::Windows::UI::Core;
+using namespace winrt::Windows::UI::Composition;
 
 using namespace Axodox::Graphics::D3D12;
 using namespace Axodox::Infrastructure;
 using namespace Axodox::Storage;
 using namespace DirectX;
+
+
 
 //using namespace AceOfHearts::Graphics::DXR;
 
@@ -117,6 +121,7 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 		CoreDispatcher dispatcher = window.Dispatcher();
 
 		GraphicsDevice device{};
+		ComPtr<GraphicsDevice> devicePtr{};
 		
 		try {
 			//CheckRayTracingSupport(&device);
@@ -141,10 +146,10 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 		PipelineStateProvider pipelineStateProvider{ device };
 
 		RootSignature<SimpleRootDescription> simpleRootSignature{ device };
-		//VertexShader simpleVertexShader{ app_folder() / L"SimpleVertexShader.cso" };
-		//PixelShader simplePixelShader{ app_folder() / L"SimplePixelShader.cso" };
+		VertexShader simpleVertexShader{ app_folder() / L"SimpleVertexShader.cso" };
+		PixelShader simplePixelShader{ app_folder() / L"SimplePixelShader.cso" };
 
-		/*GraphicsPipelineStateDefinition simplePipelineStateDefinition{
+		GraphicsPipelineStateDefinition simplePipelineStateDefinition{
 		  .RootSignature = &simpleRootSignature,
 		  .VertexShader = &simpleVertexShader,
 		  .PixelShader = &simplePixelShader,
@@ -154,15 +159,15 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 		  .RenderTargetFormats = { Format::B8G8R8A8_UNorm },
 		  .DepthStencilFormat = Format::D32_Float
 		};
-		auto simplePipelineState = pipelineStateProvider.CreatePipelineStateAsync(simplePipelineStateDefinition).get();*/
+		auto simplePipelineState = pipelineStateProvider.CreatePipelineStateAsync(simplePipelineStateDefinition).get();
 
-		/*RootSignature<PostProcessingRootDescription> postProcessingRootSignature{ device };
+		RootSignature<PostProcessingRootDescription> postProcessingRootSignature{ device };
 		ComputeShader postProcessingComputeShader{ app_folder() / L"PostProcessingComputeShader.cso" };
 		ComputePipelineStateDefinition postProcessingStateDefinition{
 		  .RootSignature = &postProcessingRootSignature,
 		  .ComputeShader = &postProcessingComputeShader
-		};*/
-		/*auto postProcessingPipelineState = pipelineStateProvider.CreatePipelineStateAsync(postProcessingStateDefinition).get();*/
+		};
+		auto postProcessingPipelineState = pipelineStateProvider.CreatePipelineStateAsync(postProcessingStateDefinition).get();
 
 		GroupedResourceAllocator groupedResourceAllocator{ device };
 		ResourceUploader resourceUploader{ device };

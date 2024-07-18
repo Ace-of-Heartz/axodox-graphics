@@ -30,6 +30,11 @@ namespace Axodox::Graphics::D3D12
 
     MemoryPool VideoMemoryPool();
 
+    ULONG Release()
+    {
+        return _device->Release();
+    }
+
   private:
     winrt::com_ptr<ID3D12DeviceT> _device;
     CapabilityFlags _flags = CapabilityFlags::Unknown;
