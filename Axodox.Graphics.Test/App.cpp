@@ -2,7 +2,7 @@
 #include "imgui.h"
 #include "imgui_impl_dx12.h"
 #include "imgui_impl_uwp.h"
-//#include "dxr_include.h"
+#include "dxr_include.h"
 #include <wrl/client.h>
 
 using namespace Microsoft::WRL;
@@ -23,7 +23,7 @@ using namespace DirectX;
 
 
 
-//using namespace AceOfHearts::Graphics::DXR;
+using namespace AceOfHearts::Graphics::DXR;
 
 
 struct App : implements<App, IFrameworkViewSource, IFrameworkView>
@@ -124,7 +124,7 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 		ComPtr<GraphicsDevice> devicePtr{};
 		
 		try {
-			//CheckRayTracingSupport(&device);
+			CheckRayTracingSupport(&device);
 		} catch (std::exception e) {
 			rasterMode = true;
 		}

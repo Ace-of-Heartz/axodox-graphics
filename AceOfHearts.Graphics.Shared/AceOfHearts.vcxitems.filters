@@ -34,9 +34,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Graphics\DXR\DXRWrapper.h">
       <Filter>AceDXR\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)AccelerationStructures.h">
-      <Filter>AceDXR\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Graphics\DXR\TopLevelASGenerator.h">
       <Filter>NvidiaDXR\Header Files</Filter>
     </ClInclude>
@@ -51,6 +48,9 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Graphics\DXR\ShaderBindingTableGenerator.h">
       <Filter>NvidiaDXR\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Graphics\DXR\AccelerationStructures.h">
+      <Filter>AceDXR\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -75,7 +75,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Graphics\DXR\TopLevelASGenerator.cpp">
       <Filter>NvidiaDXR\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)AccelerationStructures.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)Graphics\DXR\AccelerationStructures.cpp">
       <Filter>AceDXR\Source Files</Filter>
     </ClCompile>
   </ItemGroup>

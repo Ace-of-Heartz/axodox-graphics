@@ -6,48 +6,83 @@
 using namespace Microsoft::WRL;
 using namespace Axodox::Graphics::D3D12;
 
+
 namespace AceOfHearts::Graphics::DXR {
+	
+
 	struct AccelerationStructureBuffers
 	{
-		ComPtr<ID3D12Resource> scratch;
-		ComPtr<ID3D12Resource> result;
-		ComPtr<ID3D12Resource> instanceDesc;
-	};
-	struct FrameResourcesDXR
-	{
-		CommandAllocator Allocator;
-		CommandFence Fence;
-		CommandFenceMarker Marker;
-		DynamicBufferManager DynamicBuffer;
+		ResourceRef pScratch;
+		ResourceRef pResult;
+		ResourceRef pInstanceDesc;
+
+		AccelerationStructureBuffers() : pScratch(nullptr), pResult(nullptr), pInstanceDesc(nullptr) {}
+		AccelerationStructureBuffers(ResourceRef scratch, ResourceRef result, ResourceRef instanceDesc)
+		{
+			pScratch.swap(scratch);
+			pResult.swap(result);
+			pInstanceDesc.swap(instanceDesc);
+		}
 	};
 
-	struct 
+	struct ResourcesDXR
+	{
+		winrt::com_ptr<GraphicsDevice> device;
+		winrt::com_ptr<CommandList> commandList;
+		winrt::com_ptr<CommandQueue> commandQueue;
+		winrt::com_ptr<CommandFence> fence;
+		winrt::com_ptr<PipelineState> pipelineState;
+		winrt::com_ptr<DescriptorHeap> descriptorHeap;
+		ResourceRef vertexBuffer;
+		winrt::com_ptr<CommandAllocator> commandAllocator;
+		winrt::com_ptr<ResourceAllocator> resourceAllocator;
+
+		ResourcesDXR() = default;
+
+		ResourcesDXR(
+			winrt::com_ptr<GraphicsDevice> device,
+			winrt::com_ptr<CommandList> commandList,
+			winrt::com_ptr<CommandQueue> commandQueue,
+			winrt::com_ptr<CommandFence> fence,
+			winrt::com_ptr<PipelineState> pipelineState,
+			winrt::com_ptr<DescriptorHeap> descriptorHeap,
+			ResourceRef vertexBuffer,
+			winrt::com_ptr<CommandAllocator> commandAllocator,
+			winrt::com_ptr<ResourceAllocator> resourceAllocator
+		) :
+		device(device),
+		commandList(commandList),
+		commandQueue(commandQueue), fence(fence),
+		pipelineState(pipelineState),
+		descriptorHeap(descriptorHeap),
+		commandAllocator(commandAllocator),
+		resourceAllocator(resourceAllocator)
+		{
+			vertexBuffer.swap(vertexBuffer);
+		}
+	};
 
 	class AccelerationStructBuilder{
-		typedef std::vector<std::pair<ComPtr<ID3D12Resource>, DirectX::XMMATRIX>> InstanceVec;
-		typedef std::vector<std::pair<ComPtr<ID3D12Resource>, uint321_t >> VertexBufferVec;
+		typedef std::vector<std::pair<ID3D12Resource*, uint32_t>> VertexBufferVec;
+		typedef std::vector<std::pair<ID3D12Resource*, DirectX::XMMATRIX>> InstanceVec;
 		
+
 		public:
 			void CreateAccelerationStructures();
-
+			AccelerationStructBuilder() {}
+			AccelerationStructBuilder(ResourcesDXR* resources) {
+				m_resources = resources;
+			}
 		private:
-		ComPtr<ID3D12Resource> m_bottomLevelAS;
-		nv_helpers_dx12::TopLevelASGenerator m_topLevelASGenerator;
-		AccelerationStructureBuffers m_topLevelASBuffers;
-		InstanceVec m_instances;
 
-		GraphicsDevice* m_device;
-		CommandList* m_commandList;
-		CommandQueue* m_commandQueue;
+			ResourcesDXR* m_resources;
+			InstanceVec m_instances;
+			ResourceRef m_bottomLevelAS;
+			AccelerationStructureBuffers m_topLevelASBuffers;
+			nv_helpers_dx12::TopLevelASGenerator m_topLevelASGenerator;
 
-
-		AccelerationStructBuilder(GraphicsDevice* device, CommandList*)
-			: m_device(device), m_commandList(commandList)
-		{}
-
-		AccelerationStructureBuffers CreateBottomLevelAS(VertexBufferVec vVertexBuffers);
-		void CreateTopLevelAS(const InstanceVec& instances);
-
+			AccelerationStructureBuffers CreateBottomLevelAS(VertexBufferVec vVertexBuffers);
+			void CreateTopLevelAS(const InstanceVec& instances);
 	};
 
 	

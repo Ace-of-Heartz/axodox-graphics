@@ -18,9 +18,9 @@
     <Folder Include="$(MSBuildThisFileDirectory)Graphics\DXR\" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)AccelerationStructures.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)dxr_include.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Extensions\ImGUI\imgui_impl_uwp.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Graphics\DXR\AccelerationStructures.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Graphics\DXR\BottomLevelASGenerator.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Graphics\DXR\DXRUtility.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Graphics\DXR\DXRWrapper.h" />
@@ -30,8 +30,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Graphics\DXR\TopLevelASGenerator.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)AccelerationStructures.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Extensions\ImGUI\imgui_impl_uwp.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Graphics\DXR\AccelerationStructures.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Graphics\DXR\BottomLevelASGenerator.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Graphics\DXR\DXRUtility.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Graphics\DXR\RaytracingPipelineGenerator.cpp" />
