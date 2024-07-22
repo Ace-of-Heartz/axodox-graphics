@@ -10,14 +10,14 @@ void AccelerationStructBuilder::CreateAccelerationStructures()
 {
 
     AccelerationStructureBuffers bottomLevelBuffers =
-        CreateBottomLevelAS({{m_resources->vertexBuffer->operator->(),3}});
+        CreateBottomLevelAS({{m_resources->vertexBuffer->get()->getResource(),3}});
 
     m_instances = { {bottomLevelBuffers.pResult->getResource(), DirectX::XMMatrixIdentity()} };
     CreateTopLevelAS(m_instances);
 
     auto rayTracingCommandList = m_resources->commandAllocator->EndList();
     m_resources->commandQueue->Execute(rayTracingCommandList);
-    auto marker = m_resources->fence->EnqueueSignal(*m_resources->commandQueue.get());
+    auto marker = m_resources->fence->EnqueueSignal(*m_resources->commandQueue);
     m_resources->fence->Await(marker);
 
     m_resources->commandAllocator->Reset();

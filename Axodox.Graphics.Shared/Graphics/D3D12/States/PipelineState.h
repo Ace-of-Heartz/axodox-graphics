@@ -25,7 +25,8 @@ namespace Axodox::Graphics::D3D12
 
     std::future<PipelineState> CreatePipelineStateAsync(const GraphicsPipelineStateDefinition& definition, winrt::guid id = {});
     std::future<PipelineState> CreatePipelineStateAsync(const ComputePipelineStateDefinition& definition, winrt::guid id = {});
-    std::future<PipelineState> CreatePipelineStateAsync(const StreamPipelineStateDefinition& definition, winrt::guid id = {});    
+    std::future<PipelineState> CreatePipelineStateAsync(const StreamPipelineStateDefinition& definition, winrt::guid id = {});
+    
 
   private:
     GraphicsDevice _device;

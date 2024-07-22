@@ -52,6 +52,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Graphics\DXR\AccelerationStructures.h">
       <Filter>AceDXR\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)RayTracingPipelineState.h">
+      <Filter>AceDXR\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Extensions\ImGUI\imgui_impl_uwp.cpp">

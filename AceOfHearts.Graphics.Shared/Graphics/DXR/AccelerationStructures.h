@@ -27,38 +27,38 @@ namespace AceOfHearts::Graphics::DXR {
 
 	struct ResourcesDXR
 	{
-		winrt::com_ptr<GraphicsDevice> device;
-		winrt::com_ptr<CommandList> commandList;
-		winrt::com_ptr<CommandQueue> commandQueue;
-		winrt::com_ptr<CommandFence> fence;
-		winrt::com_ptr<PipelineState> pipelineState;
-		winrt::com_ptr<DescriptorHeap> descriptorHeap;
-		ResourceRef vertexBuffer;
-		winrt::com_ptr<CommandAllocator> commandAllocator;
-		winrt::com_ptr<ResourceAllocator> resourceAllocator;
+		GraphicsDevice* device;
+		CommandList* commandList;
+		CommandQueue* commandQueue;
+		CommandFence* fence;
+		PipelineState* pipelineState;
+		DescriptorHeap* descriptorHeap;
+		ResourceRef* vertexBuffer;
+		CommandAllocator* commandAllocator;
+		ResourceAllocator* resourceAllocator;
 
 		ResourcesDXR() = default;
 
 		ResourcesDXR(
-			winrt::com_ptr<GraphicsDevice> device,
-			winrt::com_ptr<CommandList> commandList,
-			winrt::com_ptr<CommandQueue> commandQueue,
-			winrt::com_ptr<CommandFence> fence,
-			winrt::com_ptr<PipelineState> pipelineState,
-			winrt::com_ptr<DescriptorHeap> descriptorHeap,
-			ResourceRef vertexBuffer,
-			winrt::com_ptr<CommandAllocator> commandAllocator,
-			winrt::com_ptr<ResourceAllocator> resourceAllocator
+			GraphicsDevice* device,
+			CommandList* commandList,
+			CommandQueue* commandQueue,
+			CommandFence* fence,
+			PipelineState* pipelineState,
+			DescriptorHeap* descriptorHeap,
+			ResourceRef* vertexBuffer,
+			CommandAllocator* commandAllocator,
+			ResourceAllocator* resourceAllocator
 		) :
 		device(device),
 		commandList(commandList),
-		commandQueue(commandQueue), fence(fence),
+		commandQueue(commandQueue),
+		fence(fence),
 		pipelineState(pipelineState),
 		descriptorHeap(descriptorHeap),
 		commandAllocator(commandAllocator),
 		resourceAllocator(resourceAllocator)
 		{
-			vertexBuffer.swap(vertexBuffer);
 		}
 	};
 

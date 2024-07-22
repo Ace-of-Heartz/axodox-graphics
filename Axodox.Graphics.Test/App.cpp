@@ -121,7 +121,6 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 		CoreDispatcher dispatcher = window.Dispatcher();
 
 		GraphicsDevice device{};
-		ComPtr<GraphicsDevice> devicePtr{};
 		
 		try {
 			CheckRayTracingSupport(&device);
@@ -137,8 +136,6 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 			clearColor = { 0.88f, 0.78f, 0.f, 0.f };
 		}
 
-		//CreateAccelerationStructures();
-
 
 		CommandQueue directQueue{ device };
 		CoreSwapChain swapChain{ directQueue, window, SwapChainFlags::IsShaderResource };
@@ -146,20 +143,22 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 		PipelineStateProvider pipelineStateProvider{ device };
 
 		RootSignature<SimpleRootDescription> simpleRootSignature{ device };
-		VertexShader simpleVertexShader{ app_folder() / L"SimpleVertexShader.cso" };
-		PixelShader simplePixelShader{ app_folder() / L"SimplePixelShader.cso" };
 
-		GraphicsPipelineStateDefinition simplePipelineStateDefinition{
-		  .RootSignature = &simpleRootSignature,
-		  .VertexShader = &simpleVertexShader,
-		  .PixelShader = &simplePixelShader,
-		  .RasterizerState = RasterizerFlags::CullClockwise,
-		  .DepthStencilState = DepthStencilMode::WriteDepth,
-		  .InputLayout = VertexPositionNormalTexture::Layout,
-		  .RenderTargetFormats = { Format::B8G8R8A8_UNorm },
-		  .DepthStencilFormat = Format::D32_Float
+		ResourcesDXR resources
+			{
+			&device,
+			nullptr,
+			&directQueue,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr
 		};
-		auto simplePipelineState = pipelineStateProvider.CreatePipelineStateAsync(simplePipelineStateDefinition).get();
+
+		//CreateAccelerationStructures();
+
 
 		RootSignature<PostProcessingRootDescription> postProcessingRootSignature{ device };
 		ComputeShader postProcessingComputeShader{ app_folder() / L"PostProcessingComputeShader.cso" };
